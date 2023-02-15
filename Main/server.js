@@ -43,6 +43,13 @@ const promptUser = () => {
             });
         }
 
+        if (answer.userSelection === 'view all roles') {
+            db.query("select * from role", (err, result) => {
+                console.table(result);
+                promptUser();
+            });
+        }
+
         // WHEN I choose to add a department
         // THEN I am prompted to enter the name of the department and that department is added to the database
         if (answer.userSelection === 'add a department') {
@@ -77,7 +84,6 @@ const promptUser = () => {
                 for (var i = 0; i < result.length; i++) {
                     options.push(result[i].full_name)
                 }
-                console.log(options);
                 inquirer.prompt({
                 type: 'list',
                 message: 'Which employees role do you want to update?',
@@ -85,16 +91,32 @@ const promptUser = () => {
                 choices: options
                 })
                 .then(({full_name}) => {
-                    db.query("select CONCAT(first_name, ' ', last_name) as full_name from employee", (err, result) => {
+                    console.log(full_name);
+                    db.query("select title from role", (err, result) => {
                         var options = [];
                         for (var i = 0; i < result.length; i++) {
-                            options.push(result[i].full_name)
-                        }  
+                            options.push(result[i].title)
+                        }
+                        inquirer.prompt({
+                            type: 'list',
+                            message: 'Which role do you want to assign?',
+                            name: 'role',
+                            choices: options
+                        })
+                        .then(({role}) => {
+                            db.query(`select id from role where title = '${role}'`, (err, result) => {
+                                var role_id = result[0].id;
+                                db.query(`select id from employee where CONCAT(first_name, ' ', last_name) = '${full_name}'`, (err, result) => {
+                                    var employee_id = result[0].id;
+                                    db.query(`update employee set role_id = ${role_id} where id = ${employee_id}`, (err, result) => {
+                                        promptUser();
+                                    });
+                                });
+                            });
+                        });
                     })
-
-                    
                 });
-            });
+            })
             
         }
     })
