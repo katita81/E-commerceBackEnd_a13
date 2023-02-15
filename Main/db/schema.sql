@@ -7,19 +7,21 @@ USE employees_db;
 
 CREATE TABLE department (
 
-    id: INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
-    depart_name: VARCHAR(30) NOT NULL
+    id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(30) NOT NULL
 
-)
+);
 
 CREATE TABLE role(
+    id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    title VARCHAR(30) NOT NULL,
+    salary INT NOT NULL,
+    department INT,
+    FOREIGN KEY (department)
+    REFERENCES department(id)
+    ON DELETE SET NULL
 
-    id: INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
-    title: VARCHAR(30) NOT NULL,
-    salary: INT NOT NULL,
-    department_id: INT NOT NULL
-
-)
+);
 
 CREATE TABLE employee (
     -- Creates a numeric column called "id" which will automatically increment its default value as we create new rows --
@@ -27,7 +29,8 @@ CREATE TABLE employee (
     -- Makes a string column called "first name" which cannot contain null --
     first_name VARCHAR(30) NOT NULL,
     last_name VARCHAR(30) NOT NULL,
-    role_id INT NOT NULL,
-    manager_id INT NOT NULL
+    role_id INT,
+    manager_id INT,
+    FOREIGN KEY (role_id) REFERENCES role(id) ON DELETE SET NULL
 );
 
