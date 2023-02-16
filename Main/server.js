@@ -9,6 +9,34 @@ const db =    mysql.createConnection({
     database:   'employees_db'
 });
 
+const all_employees_query = `
+SELECT
+    t1.id,
+    t1.first_name,
+    t1.last_name,
+    t1.title,
+    t1.department,
+    t1.salary,
+    CONCAT(t2.first_name, ' ', t2.last_name) AS manager
+FROM
+    (SELECT 
+        employee.id,
+        employee.first_name,
+        employee.last_name,
+        role.title,
+        department.name AS department,
+        role.salary,
+        employee.manager_id
+    FROM 
+        employee, 
+        role, 
+        department
+    WHERE 
+        employee.role_id = role.id
+        AND role.department = department.id) AS t1
+    LEFT JOIN employee AS t2
+    ON t1.manager_id = t2.id
+;`;
 
 
 // GIVEN a command-line application that accepts user input
@@ -45,6 +73,13 @@ const promptUser = () => {
 
         if (answer.userSelection === 'view all roles') {
             db.query("select * from role", (err, result) => {
+                console.table(result);
+                promptUser();
+            });
+        }
+
+        if (answer.userSelection === 'view all employees') {
+            db.query(all_employees_query, (err, result) => {
                 console.table(result);
                 promptUser();
             });
