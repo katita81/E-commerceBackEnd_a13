@@ -36,6 +36,21 @@ FROM
         AND role.department = department.id) AS t1
     LEFT JOIN employee AS t2
     ON t1.manager_id = t2.id
+ORDER BY 1 ASC
+;`;
+
+const all_roles_query = `
+SELECT
+    role.id,
+    role.title,
+    department.name as department,
+    role.salary
+FROM
+    role,
+    department
+WHERE
+    role.department = department.id
+ORDER BY 1 ASC
 ;`;
 
 
@@ -58,6 +73,7 @@ const promptUser = () => {
                 'add an employee', 
                 'update an employee role']
 
+
     }).then(answer => {
         // find out which they chose
 
@@ -73,7 +89,7 @@ const promptUser = () => {
 
         // WHEN I choose to view all roles
         if (answer.userSelection === 'view all roles') {
-            db.query("select * from role", (err, result) => {
+            db.query(all_roles_query, (err, result) => {
                 // THEN I am presented with the job title, role id, the department
                 // that role belongs to, and the salary for that role
                 console.table(result);///* ? deparment should be name not number */
@@ -104,28 +120,86 @@ const promptUser = () => {
                 // THEN I am prompted to enter the name of the department and that department is added to the database
                 .then(input => {
                     var department = input.deparment;
-                    // create and eng obj
-                    // add our new obj to hour emp
                     db.query(`INSERT INTO department (name) values ('${department}')`)
                     console.log('Added '+ department +' to the database')
                     promptUser();
                 })
+        }
 
         // WHEN I choose to add a role
-        // THEN I am prompted to enter the name, salary, and department for the role and that role is added to the database
+        
+        if (answer.userSelection === 'add a role') {
+            // THEN I am prompted to enter the name, salary, and department for the role and 
+            inquirer.prompt([
+            {
+                    type: 'input',
+                    name: 'title',
+                    message: 'Enter role name: ',
+                },
 
+            {
+                    type: 'input',
+                    name: 'salary',
+                    message: 'Enter salary: ',
+                },
 
-        // WHEN I choose to add an employee
-        // THEN I am prompted to enter the employee’s first name, last name, role, and manager, and that employee is added to the database
+            {
+                    type: 'input',
+                    name: 'department',
+                    message: 'Enter department: ',
+                } 
+                
+            ])
+                //that role is added to the database
+                .then(input => {
+                    var title = input.title;
+                    var salary = input.salary;
+                    var department = input.department;
 
-            
-
-
-
-
+                    db.query(`INSERT INTO role (title, salary) VALUES ('${title}', '${salary}');
+                    INSERT INTO department (name) VALUES ('${department}')`);
+                    console.log('Added ' + title + ' ' + salary + ' '+department+  ' to the database')
+                    promptUser();
+                })
         }
-        // WHEN I choose to update an employee role
-            
+        // WHEN I choose to add an employee
+        if (answer.userSelection === 'add an employee') {
+            // THEN I am prompted to enter the employee’s first name, last name, role, and manager,
+            inquirer.prompt([
+                {
+                    type: 'input',
+                    name: 'firstName',
+                    message: 'Enter employees first name: ',
+                },
+                {
+                    type: 'input',
+                    name: 'lastName',
+                    message: 'Enter employees last name: ',
+                },
+                {
+                    type: 'input',
+                    name: 'title',
+                    message: 'Enter employees role: ',
+                },
+                {
+                    type: 'input',
+                    name: 'employeeManager',
+                    message: 'Enter employees manager: ',
+                }
+            ])
+                //and that employee is added to the database
+                .then(input => {
+                    var firstName = input.firstName;
+                    var lastName = input.lastName;
+                    var role_id = input.title;
+                    var manager_id = input.employeeManager;
+
+                    db.query(`INSERT INTO employee(first_name, last_name, role_id, manager_id) values ('${firstName}','${lastName}',${role_id}, ${manager_id})`)
+                    console.log('Added employee to the database')
+                    promptUser()
+                })
+        }
+        // WHEN I choose to update an employee role 
         if (answer.userSelection === 'update an employee role') {
             db.query("select CONCAT(first_name, ' ', last_name) as full_name from employee", (err, result) => {
                 var options = [];
@@ -172,18 +246,6 @@ const promptUser = () => {
         }
     })
 }
-
-
-
-
-
-
-
-
-
-
-
-
 const init = () => {
     promptUser()
 }
