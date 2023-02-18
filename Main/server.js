@@ -60,6 +60,7 @@ ORDER BY 1 ASC
 const promptUser = () => {
     inquirer.prompt({
         type: 'list',
+        pageSize: 8,
         message: 'Select one of the following options',
         name: 'userSelection',
         choices: ['view all departments', 
@@ -68,10 +69,13 @@ const promptUser = () => {
                 'add a department', 
                 'add a role', 
                 'add an employee', 
-                'update an employee role']
+                'update an employee role',
+                'exit']
 
 
     }).then(answer => {
+
+
         // WHEN I choose to view all departments
         if (answer.userSelection === 'view all departments') {
             db.query("select * from department", (err, result) => {
@@ -185,20 +189,34 @@ const promptUser = () => {
                 },
                 {
                     type: 'input',
-                    name: 'employeeManager',
-                    message: 'Enter employees manager: ',
+                    name: 'managerFname',
+                    message: 'Enter employees manager first name: ',
+                },
+                {
+                    type: 'input',
+                    name: 'managerLname',
+                    message: 'Enter employees manager last name: ',
                 }
             ])
                 //and that employee is added to the database
                 .then(input => {
                     var firstName = input.firstName;
                     var lastName = input.lastName;
-                    var role_id = input.title;
-                    var manager_id = input.employeeManager;
+                    var title = input.title;
+                    var managerFname = input.managerFname;
+                    var managerLname = input.managerLname;
 
-                    db.query(`INSERT INTO employee(first_name, last_name, role_id, manager_id) values ('${firstName}','${lastName}',${role_id}, ${manager_id})`)
-                    console.log('Added employee to the database')
-                    promptUser()
+                    db.query(`SELECT id FROM employee WHERE first_name = '${managerFname}' AND last_name = '${managerLname}'`,(err, result) =>{
+                        var manager_id = result[0].id;
+                        db.query(`SELECT id FROM role WHERE title = '${title}'`, (err, result) => {
+                            var role_id = result[0].id;
+                            db.query(`INSERT INTO employee (first_name, last_name, role_id, manager_id) values ('${firstName}','${lastName}',${role_id}, ${manager_id})`,
+                                (err, result) => {
+                                    console.log('Added employee to the database')
+                                    promptUser();
+                                });
+                        });
+                    });
                 })
         }
         // WHEN I choose to update an employee role 
@@ -246,7 +264,11 @@ const promptUser = () => {
             })
             
         }
+        if (answer.userSelection === 'exit') {
+            process.exit(0);
+        }
     })
+    
 }
 const init = () => {
     promptUser()
