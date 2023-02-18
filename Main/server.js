@@ -52,14 +52,11 @@ WHERE
     role.department = department.id
 ORDER BY 1 ASC
 ;`;
-
-
 // GIVEN a command-line application that accepts user input
-
-
 // WHEN I start the application
-// THEN I am presented with the following options: view all departments, view all roles, view all employees, add a department, add a role, add an employee, and update an employee role
 
+// THEN I am presented with the following options: view all departments, view all roles,
+// view all employees, add a department, add a role, add an employee, and update an employee role
 const promptUser = () => {
     inquirer.prompt({
         type: 'list',
@@ -75,8 +72,6 @@ const promptUser = () => {
 
 
     }).then(answer => {
-        // find out which they chose
-
         // WHEN I choose to view all departments
         if (answer.userSelection === 'view all departments') {
             db.query("select * from department", (err, result) => {
@@ -155,11 +150,18 @@ const promptUser = () => {
                     var title = input.title;
                     var salary = input.salary;
                     var department = input.department;
+                    db.query(`SELECT id FROM department WHERE name = '${department}'`, (err, result) => {
+                        var department_id = result[0].id; 
+                        db.query(`INSERT INTO role (title, salary, deparment) VALUES ('${title}', '${salary}',${department_id})`,
+                        (err, result) =>{
+                            console.log('Added ' + title + ' ' + salary + ' ' + department + ' to the database')
+                            promptUser();
+                        } );
+                    })
 
-                    db.query(`INSERT INTO role (title, salary) VALUES ('${title}', '${salary}');
-                    INSERT INTO department (name) VALUES ('${department}')`);
-                    console.log('Added ' + title + ' ' + salary + ' '+department+  ' to the database')
-                    promptUser();
+                    
+                    
+                    
                 })
         }
         // WHEN I choose to add an employee
