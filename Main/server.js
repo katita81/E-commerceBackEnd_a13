@@ -62,23 +62,30 @@ const promptUser = () => {
         // find out which they chose
 
         // WHEN I choose to view all departments
-        // THEN I am presented with a formatted table showing department 
-        //names and department ids
         if (answer.userSelection === 'view all departments') {
             db.query("select * from department", (err, result) => {
+                // THEN I am presented with a formatted table showing department
+                //names and department ids
                 console.table(result);
                 promptUser();
             });
         }
 
+        // WHEN I choose to view all roles
         if (answer.userSelection === 'view all roles') {
             db.query("select * from role", (err, result) => {
-                console.table(result);
+                // THEN I am presented with the job title, role id, the department
+                // that role belongs to, and the salary for that role
+                console.table(result);///* ? deparment should be name not number */
                 promptUser();
             });
         }
 
+        // WHEN I choose to view all employees
+        
         if (answer.userSelection === 'view all employees') {
+            // THEN I am presented with a formatted table showing employee data, including employee ids, first names, last names, job titles,
+            // departments,salaries, and managers that the employees report to
             db.query(all_employees_query, (err, result) => {
                 console.table(result);
                 promptUser();
@@ -86,17 +93,15 @@ const promptUser = () => {
         }
 
         // WHEN I choose to add a department
-        // THEN I am prompted to enter the name of the department and that department is added to the database
         if (answer.userSelection === 'add a department') {
             inquirer.prompt([
-               
                 {
                     type: 'input',
                     name: 'deparment',
                     message: 'Enter department name: ',
                 }
             ])
-
+                // THEN I am prompted to enter the name of the department and that department is added to the database
                 .then(input => {
                     var department = input.deparment;
                     // create and eng obj
@@ -106,25 +111,35 @@ const promptUser = () => {
                     promptUser();
                 })
 
+        // WHEN I choose to add a role
+        // THEN I am prompted to enter the name, salary, and department for the role and that role is added to the database
+
+
+        // WHEN I choose to add an employee
+        // THEN I am prompted to enter the employee’s first name, last name, role, and manager, and that employee is added to the database
+
             
 
 
 
 
         }
-
+        // WHEN I choose to update an employee role
+            
         if (answer.userSelection === 'update an employee role') {
             db.query("select CONCAT(first_name, ' ', last_name) as full_name from employee", (err, result) => {
                 var options = [];
                 for (var i = 0; i < result.length; i++) {
                     options.push(result[i].full_name)
                 }
+                // THEN I am prompted to select an employee to update
                 inquirer.prompt({
                 type: 'list',
                 message: 'Which employees role do you want to update?',
                 name: 'full_name',
                 choices: options
                 })
+                 //and their new role 
                 .then(({full_name}) => {
                     console.log(full_name);
                     db.query("select title from role", (err, result) => {
@@ -143,6 +158,7 @@ const promptUser = () => {
                                 var role_id = result[0].id;
                                 db.query(`select id from employee where CONCAT(first_name, ' ', last_name) = '${full_name}'`, (err, result) => {
                                     var employee_id = result[0].id;
+                                    //and this information is updated in the database
                                     db.query(`update employee set role_id = ${role_id} where id = ${employee_id}`, (err, result) => {
                                         promptUser();
                                     });
@@ -159,18 +175,14 @@ const promptUser = () => {
 
 
 
-// WHEN I choose to view all roles
-// THEN I am presented with the job title, role id, the department that role belongs to, and the salary for that role
-// WHEN I choose to view all employees
-// THEN I am presented with a formatted table showing employee data, including employee ids, first names, last names, job titles, departments, salaries, and managers that the employees report to
 
 
-// WHEN I choose to add a role
-// THEN I am prompted to enter the name, salary, and department for the role and that role is added to the database
-// WHEN I choose to add an employee
-// THEN I am prompted to enter the employee’s first name, last name, role, and manager, and that employee is added to the database
-// WHEN I choose to update an employee role
-// THEN I am prompted to select an employee to update and their new role and this information is updated in the database
+
+
+
+
+
+
 
 const init = () => {
     promptUser()
