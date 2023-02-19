@@ -2,6 +2,8 @@
 
 This is command-line application to manage a company's employee database mainly addressed to bussiness owners who want to view and manage their departments, roles and employees in their companies so they can organize and plan their businesses.
 
+First set up the data by position me in the db folder and running mysql -u root -p, typing mysql password, source schema.sql, source seeds.sql, exit, back to main folder. run application and choose view role to see the updated role table with the added role.
+
 GIVEN a command-line application that accepts user input.
 
 WHEN I start the application
@@ -21,7 +23,6 @@ THEN I am prompted to enter the name of the department and that department is ad
 
 WHEN I choose to add a role
 THEN I am prompted to enter the name, salary, and department for the role and that role is added to the database.
-THEN I update schema.sql and seeds.sql by position me in the db folder and running mysql -u root -p, typing mysql password, source schema.sql, source seeds.sql, exit, back to main folder. run application and choose view role to see the updated role table with the added role.
 
 WHEN I choose to add an employee
 THEN I am prompted to enter the employee’s first name, last name, role, and manager, and that employee is added to the database.

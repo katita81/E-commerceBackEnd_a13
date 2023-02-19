@@ -112,13 +112,13 @@ const promptUser = () => {
             inquirer.prompt([
                 {
                     type: 'input',
-                    name: 'deparment',
+                    name: 'department',
                     message: 'Enter department name: ',
                 }
             ])
                 // THEN I am prompted to enter the name of the department and that department is added to the database
                 .then(input => {
-                    var department = input.deparment;
+                    var department = input.department;
                     db.query(`INSERT INTO department (name) values ('${department}')`)
                     console.log('Added '+ department +' to the database')
                     promptUser();
@@ -156,7 +156,7 @@ const promptUser = () => {
                     var department = input.department;
                     db.query(`SELECT id FROM department WHERE name = '${department}'`, (err, result) => {
                         var department_id = result[0].id; 
-                        db.query(`INSERT INTO role (title, salary, deparment) VALUES ('${title}', '${salary}',${department_id})`,
+                        db.query(`INSERT INTO role (title, salary, department) VALUES ('${title}', ${salary},${department_id})`,
                         (err, result) =>{
                             console.log('Added ' + title + ' ' + salary + ' ' + department + ' to the database')
                             promptUser();
