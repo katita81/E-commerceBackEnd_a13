@@ -30,15 +30,15 @@ THEN I am prompted to enter the employee’s first name, last name, role, and ma
 WHEN I choose to update an employee role
 THEN I am prompted to select an employee to update and their new role and this information is updated in the database.
 
-![Command line menu](assets\imgs\1_commandLineMenu.png)
+![Command line menu](assets/imgs/1_commandLineMenu.png)
 
-![View all deparments roles and employees](assets\imgs\2_viewDepartsRollsEmployees.png)
+![View all deparments roles and employees](assets/imgs/2_viewDepartsRollsEmployees.png)
 
-![Add deparments and roles](assets\imgs\3_addDepartmentAndRole.png)
+![Add deparments and roles](assets/imgs/3_addDepartmentAndRole.png)
 
-![Add employee](assets\imgs\4_addEmployee.png)
+![Add employee](assets/imgs/4_addEmployee.png)
 
-![Update employee](assets\imgs\5_updateEmployee.png)
+![Update employee](assets/imgs/5_updateEmployee.png)
 
 
 Link to the walk trough video:
