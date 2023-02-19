@@ -46,10 +46,3 @@ Link to the walk trough video:
 
 GitHub Repository:
 https://github.com/katita81/employeeTracker_a12
-
-
-
-
-
-The URL of the GitHub repository, with a unique name and a README describing the project:
-<https://github.com/katita81/E-commerceBackEnd_a13>
